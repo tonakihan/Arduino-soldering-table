@@ -8,3 +8,4 @@ test/README
 lib/Adafruit_BusIO
 lib/Adafruit_MAX31855
 lib/GyverPID
+lib/LiquidCrystal_I2C
