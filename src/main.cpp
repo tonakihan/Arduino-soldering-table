@@ -23,6 +23,7 @@ void maskTargetTemp();
 void initPages();
 void displayMenu();
 void displayTemp(double tempTop, double tempBottom);
+void markStatus(uint8_t numLine, char status);
 
 
 void setup() {
@@ -49,8 +50,10 @@ void loop() {
   
   temperature.updateTemp();
   if (temperature.error) { // При ошибке скидываемся.
+    markStatus(0, 'E'); //Показываем ошибку
+    markStatus(1, 'E');
     delay(100);
-    return;
+    return;  
   };
 
   if (
@@ -73,8 +76,23 @@ void loop() {
   pidHandlerBottom.setpoint = targetTemp.tBottom;
   pidHandlerTop.setpoint = targetTemp.tTop;
   // Указания от PID
-  digitalWrite(PIN_heating_bottom, pidHandlerBottom.getResultTimer());
-  digitalWrite(PIN_heating_top, pidHandlerTop.getResultTimer());
+  if (pidHandlerBottom.getResultTimer()) {
+    digitalWrite(PIN_heating_bottom, 1);
+    markStatus(1, 'H');
+  }
+  else {
+    digitalWrite(PIN_heating_bottom, 0);
+    markStatus(1, ' ');
+  }
+
+  if (pidHandlerTop.getResultTimer()) {
+    digitalWrite(PIN_heating_top, 1);
+     markStatus(0, 'H');
+  }
+  else {
+    digitalWrite(PIN_heating_top, 0);
+    markStatus(0, ' ');
+  }
 }
 
 
@@ -158,6 +176,12 @@ void maskSetTempTop() {
 }
 void maskSetTempBottom() {
   displaySetTemp(targetTemp.tBottom);
+}
+
+/* -- Дополнительные функции для display (работают поверх display) -- */
+void markStatus(uint8_t numLine, char status) {
+  lcd.setCursor(15, numLine);
+  lcd.print(status);
 }
 
 void initPages() {
