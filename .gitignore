@@ -5,7 +5,6 @@ include/README
 lib/README
 test/README
 
-lib/Adafruit_BusIO
-lib/Adafruit_MAX31855
-lib/GyverPID
-lib/LiquidCrystal_I2C
+lib/*
+!lib/myTemperature
+!lib/Tonakihan_LcdMenu
